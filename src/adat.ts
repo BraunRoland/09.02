@@ -2,5 +2,5 @@
     nev: string;
     szul: string;
     pontszam: number;
-    varos?: string;
+    varos?: any;
 }
