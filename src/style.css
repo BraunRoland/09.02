@@ -16,3 +16,7 @@ form {
 thead {
   text-align: center;
 }
+
+table td.ures {
+  background-color: rgb(218, 71, 71);
+}

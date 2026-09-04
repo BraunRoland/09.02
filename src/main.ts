@@ -1,4 +1,5 @@
 import type { Emberek } from "./adat";
+import "./style.css";
 
 let adatok: Emberek[] = [];
 
@@ -19,7 +20,7 @@ async function beolvasas() {
 }
 function kiiras() {
     const tbody: HTMLElement | null = document.getElementById('tablazatAdat');
-    adatok.forEach(ember => {
+    adatok.forEach((ember, ind) => {
         let tr: HTMLTableRowElement = document.createElement('tr');
         let nev: HTMLTableCellElement = document.createElement('td');
         nev.innerHTML = ember.nev;
@@ -29,10 +30,22 @@ function kiiras() {
         pontszam.innerHTML = ember.pontszam.toString();
         let varos: HTMLTableCellElement = document.createElement('td');
         varos.innerHTML = ember.varos;
+        let buttonTd :HTMLTableCellElement = document.createElement('td');
+        let btn: HTMLButtonElement = document.createElement('button');
+        btn.classList += 'btn btn-danger'
+        btn.innerText = 'törlés';
+        btn.addEventListener('click', ()=> {
+            dbDel(ind);
+        });
+        if (ember.varos == null || ember.varos == "") {
+            varos.classList += 'ures';
+        }
+        buttonTd.appendChild(btn);
         tr.appendChild(nev);
         tr.appendChild(szul);
         tr.appendChild(pontszam);
         tr.appendChild(varos);
+        tr.appendChild(buttonTd);
         tbody?.appendChild(tr);
     })
 }
@@ -55,7 +68,20 @@ async function formBeolvasas() {
         uj = {nev: nev, szul: szul, pontszam: pont}
     }
     await dbPost(uj)
+    nevF.value = "";
+    szulF.value = "";
+    pontF.value = "";
+    lakF.value = "";
+    await init();
+}
 
+async function dbDel(i: number) {
+       let data = await fetch(`https://retoolapi.dev/VScxxg/data/${i+1}`, 
+        {
+            method: "DELETE",
+        }
+    );
+    await init();
 }
 
 async function dbPost(e: Emberek) {
@@ -75,6 +101,8 @@ function dateKiiras(datum: Date):string {
 }
 
 async function init() {
+    adatok = [];
+    document.getElementById("tablazatAdat")!.innerHTML = "";
     await beolvasas();
     kiiras();
 }
