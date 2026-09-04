@@ -7,7 +7,7 @@ async function beolvasas() {
     let data = await response.json();
     data.forEach((x: any) => {
         if (x.Lakhely != null) {
-            let ember: Emberek = {nev: x.Nev, szul: x.Szuletesnap, pontszam: x.Pontszam, varos: x.Lakhely};
+            let ember: Emberek = {nev: x.Nev, szul: new Date(x.Szuletesnap), pontszam: x.Pontszam, varos: x.Lakhely};
             adatok.push(ember)
         }
         else {
@@ -24,7 +24,7 @@ function kiiras() {
         let nev: HTMLTableCellElement = document.createElement('td');
         nev.innerHTML = ember.nev;
         let szul: HTMLTableCellElement = document.createElement('td');
-        szul.innerHTML =ember.szul; 
+        szul.innerHTML = dateKiiras(ember.szul); 
         let pontszam: HTMLTableCellElement = document.createElement('td');
         pontszam.innerHTML = ember.pontszam.toString();
         let varos: HTMLTableCellElement = document.createElement('td');
@@ -35,6 +35,10 @@ function kiiras() {
         tr.appendChild(varos);
         tbody?.appendChild(tr);
     })
+}
+
+function dateKiiras(datum: Date):string {
+    return `${datum.getFullYear()}-${datum.getMonth()+1}-${datum.getDate()}`
 }
 
 async function init() {
